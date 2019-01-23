@@ -5,6 +5,7 @@
 //dependencies
 const http = require("http");
 const url = require("url");
+const StringDecoder = require("string_decoder").StringDecoder;
 
 var server = http.createServer(function (req, res) {
 
@@ -19,8 +20,19 @@ var server = http.createServer(function (req, res) {
 
     var requestHeaders = req.headers;
 
+    var decoder = new StringDecoder('utf-8');
+    var buffer = '';
 
-    res.end("Hello World\n");
+    req.on('data', function(bufferData) {
+        buffer += decoder.write(bufferData);
+    });
+
+    req.on('end', function() {
+        buffer += decoder.end();
+
+        res.end("Hello World\n");
+        console.log("Buffer data received: " + buffer);
+    })
 
 });
 
