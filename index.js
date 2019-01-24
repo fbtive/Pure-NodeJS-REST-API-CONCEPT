@@ -6,6 +6,7 @@
 const http = require("http");
 const url = require("url");
 const StringDecoder = require("string_decoder").StringDecoder;
+const config = require("./config");
 
 var server = http.createServer(function (req, res) {
 
@@ -49,6 +50,7 @@ var server = http.createServer(function (req, res) {
 
             var payloadString = JSON.stringify(payload);
 
+            res.setHeader('Content-Type', 'application/json');
             res.writeHead(statusCode);
             res.end(payloadString);
             console.log("Response data received: " + statusCode, payloadString);
@@ -57,10 +59,11 @@ var server = http.createServer(function (req, res) {
 
 });
 
-server.listen(3000, function(){
-    console.log("the server is listening on port 3000 now")
+server.listen(config.port, function(){
+    console.log("the server is listening on port " +config.port+ " in " +config.envName+ " now")
 })
 
+//Routing Handlers
 var handlers = {};
 
 handlers.sample = function(data, callback) {
