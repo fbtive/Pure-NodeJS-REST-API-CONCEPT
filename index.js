@@ -4,13 +4,34 @@
 
 //dependencies
 const http = require("http");
+const https = require("https");
 const url = require("url");
 const StringDecoder = require("string_decoder").StringDecoder;
 const config = require("./config");
 var fs = require('fs');
 var _data = require('./lib/data');
 
-var server = http.createServer(function (req, res) {
+var httpServer = http.createServer(function (req, res) {
+    unifiedServer(req, res);
+});
+
+httpServer.listen(config.httpPort, function(){
+    console.log("the server is listening on port " +config.httpPort+ " in " +config.envName+ " now")
+})
+
+var httpsServerOptions = {
+    'key': fs.readFileSync('./https/key.pem'),
+    'cert': fs.readFileSync('./https/cer.pem')
+};
+var httpsServer = https.createServer(httpsServerOptions, function (req, res){
+    unifiedServer(req, res);
+})
+
+httpsServer.listen(config.httpsPort, function(){
+    console.log("the server is listening on port " +config.httpsPort+ " in " +config.envName+ " now")
+})
+
+var unifiedServer = function (req, res) {
 
     var parsedURL = url.parse(req.url, true);
 
@@ -59,11 +80,7 @@ var server = http.createServer(function (req, res) {
         })
     })
 
-});
-
-server.listen(config.port, function(){
-    console.log("the server is listening on port " +config.port+ " in " +config.envName+ " now")
-})
+}
 
 //Routing Handlers
 var handlers = {};
