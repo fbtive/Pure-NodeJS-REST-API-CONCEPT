@@ -7,6 +7,8 @@ const http = require("http");
 const url = require("url");
 const StringDecoder = require("string_decoder").StringDecoder;
 const config = require("./config");
+var fs = require('fs');
+var _data = require('./lib/data');
 
 var server = http.createServer(function (req, res) {
 
